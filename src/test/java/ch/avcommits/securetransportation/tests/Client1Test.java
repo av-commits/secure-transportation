@@ -45,7 +45,7 @@ public class Client1Test {
         CardCredentialRequest ccr = new CardCredentialRequest();
         ccr.setResponsePublicKey(requestBase64);
 
-        CardCredential cc = restTemplate.postForObject(baseUrl + "cards/12345/credentials2",
+        CardCredential cc = restTemplate.postForObject(baseUrl + "cards/12345/credentialsPan",
                 ccr, CardCredential.class);
 
         byte[] dedata = crypto.decryptCmsData(Base64.getDecoder().decode(cc.getEncryptedContent()),

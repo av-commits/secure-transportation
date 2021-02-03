@@ -13,14 +13,18 @@ import java.util.Base64;
 @RequestMapping("/cards")
 @Slf4j
 public class CardRestController {
-    @Autowired
-    private TrustedCaStore caStore;
+    private final TrustedCaStore caStore;
+
+    private final CryptoOperations crypto;
 
     @Autowired
-    private CryptoOperations crypto;
+    public CardRestController(TrustedCaStore caStore, CryptoOperations crypto) {
+        this.caStore = caStore;
+        this.crypto = crypto;
+    }
 
-    @PostMapping("{cardID}/credentials2")
-    CardCredential getCardCreds(@RequestBody CardCredentialRequest req, @PathVariable String cardID) {
+    @PostMapping("{cardID}/credentialsPan")
+    CardCredential getCardCredentialsPAN(@RequestBody CardCredentialRequest req, @PathVariable String cardID) {
         log.info("Get Card Credentials for {}", cardID);
         X509Certificate pk = CertUtils.loadCertificate(req.getResponsePublicKey());
 

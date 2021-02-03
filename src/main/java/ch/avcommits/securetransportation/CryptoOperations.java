@@ -5,9 +5,9 @@ import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 
 public interface CryptoOperations {
-    public X500PrivateCredential generateSelfSignedCred(String certName);
-    public X500PrivateCredential generateRequestCred(String certName, X500PrivateCredential caCred);
+    X500PrivateCredential generateSelfSignedCred(String certName);
+    X500PrivateCredential generateRequestCred(String certName, X500PrivateCredential caCred);
 
-    public byte[] encryptCmsData(byte[] data, X509Certificate encryptionCertificate);
-    public byte[] decryptCmsData(byte[] encryptedData, PrivateKey decryptionKey);
+    byte[] encryptCmsData(byte[] data, X509Certificate encryptionCertificate);
+    byte[] decryptCmsData(byte[] encryptedData, PrivateKey decryptionKey);
 }

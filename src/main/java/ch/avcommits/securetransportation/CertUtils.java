@@ -31,15 +31,14 @@ public class CertUtils {
 
         final Base64.Encoder encoder = Base64.getMimeEncoder(64, LINE_SEPARATOR.getBytes());
 
-        byte[] rawCrtText = null;
+        byte[] rawCrtText;
         try {
             rawCrtText = certificate.getEncoded();
         } catch (CertificateEncodingException e) {
             throw new RuntimeException(e);
         }
         final String encodedText = new String(encoder.encode(rawCrtText));
-        final String prettified = BEGIN_CERT + LINE_SEPARATOR + encodedText + LINE_SEPARATOR + END_CERT;
-        return prettified;
+        return BEGIN_CERT + LINE_SEPARATOR + encodedText + LINE_SEPARATOR + END_CERT;
     }
 
     public static String formatKeyFileContents(final PrivateKey key)  {
@@ -52,8 +51,7 @@ public class CertUtils {
         byte[] rawCrtText = key.getEncoded();
 
         final String encodedText = new String(encoder.encode(rawCrtText));
-        final String prettified = BEGIN_KEY + LINE_SEPARATOR + encodedText + LINE_SEPARATOR + END_KEY;
-        return prettified;
+        return BEGIN_KEY + LINE_SEPARATOR + encodedText + LINE_SEPARATOR + END_KEY;
     }
 
     public static String formatCmsFileContents(final byte[] content)  {
@@ -64,7 +62,6 @@ public class CertUtils {
         final Base64.Encoder encoder = Base64.getMimeEncoder(64, LINE_SEPARATOR.getBytes());
 
         final String encodedText = new String(encoder.encode(content));
-        final String prettified = BEGIN_KEY + LINE_SEPARATOR + encodedText + LINE_SEPARATOR + END_KEY;
-        return prettified;
+        return BEGIN_KEY + LINE_SEPARATOR + encodedText + LINE_SEPARATOR + END_KEY;
     }
 }

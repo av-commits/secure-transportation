@@ -10,8 +10,12 @@ import java.util.Base64;
 @RestController
 @RequestMapping("/ca")
 public class CARestController {
+    private final TrustedCaStore caStore;
+
     @Autowired
-    private TrustedCaStore caStore;
+    public CARestController(TrustedCaStore caStore) {
+        this.caStore = caStore;
+    }
 
     @PutMapping("/{name}")
     void addCa(@RequestBody CaEntity ca, @PathVariable String name) {

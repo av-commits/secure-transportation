@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.bouncycastle.util.encoders.Base64;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StreamUtils;
 
 import javax.security.auth.x500.X500PrivateCredential;
 import java.io.*;
@@ -27,7 +28,7 @@ public class CryptoOpenssl implements CryptoOperations {
 
     @Override
     public byte[] encryptCmsData(byte[] data, X509Certificate encryptionCertificate) {
-        byte[] result = null;
+        byte[] result;
 
         File certFile = null;
         File contentFile = null;
@@ -53,11 +54,11 @@ public class CryptoOpenssl implements CryptoOperations {
 
             //openssl should be in path
             Runtime rt = Runtime.getRuntime();
-            String cmd = "\"C:\\Program Files\\OpenSSL-Win64\\bin\\openssl.exe\" " + cmdParam;
+            final String cmd = "\"C:\\Program Files\\OpenSSL-Win64\\bin\\openssl.exe\" " + cmdParam;
             Process proc = rt.exec(cmd);
 
-            String stdInputS = new String(proc.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-            String stdErrorS = new String(proc.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
+            final String stdInputS = StreamUtils.copyToString(proc.getInputStream(), StandardCharsets.UTF_8);
+            final String stdErrorS = StreamUtils.copyToString(proc.getErrorStream(), StandardCharsets.UTF_8);
 
             log.info("stdin: {}", stdInputS);
             log.info("stderr: {}", stdErrorS);
@@ -80,25 +81,16 @@ public class CryptoOpenssl implements CryptoOperations {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            if (certFile != null)
-                try {
-                    certFile.delete();
-                } catch (Exception e) {};
-            if (encryptedFile != null)
-                try {
-                    encryptedFile.delete();
-                } catch (Exception e) {};
-            if (contentFile != null)
-                try {
-                    contentFile.delete();
-                } catch (Exception e) {};
+            FileUtils.deleteQuietly(certFile);
+            FileUtils.deleteQuietly(encryptedFile);
+            FileUtils.deleteQuietly(contentFile);
         }
         return result;
     }
 
     @Override
     public byte[] decryptCmsData(byte[] encryptedData, PrivateKey decryptionKey) {
-        byte[] result = null;
+        byte[] result;
 
         File keyFile = null;
         File contentFile = null;
@@ -125,13 +117,13 @@ public class CryptoOpenssl implements CryptoOperations {
 
             //openssl should be in path
             Runtime rt = Runtime.getRuntime();
-            String cmd = "\"C:\\Program Files\\OpenSSL-Win64\\bin\\openssl.exe\" " + cmdParam;
+            final String cmd = "\"C:\\Program Files\\OpenSSL-Win64\\bin\\openssl.exe\" " + cmdParam;
             Process proc = rt.exec(cmd);
 
             log.info("cmd: {}", cmdParam);
 
-            String stdInputS = new String(proc.getInputStream().readAllBytes(), StandardCharsets.UTF_8);
-            String stdErrorS = new String(proc.getErrorStream().readAllBytes(), StandardCharsets.UTF_8);
+            final String stdInputS = StreamUtils.copyToString(proc.getInputStream(), StandardCharsets.UTF_8);
+            final String stdErrorS = StreamUtils.copyToString(proc.getErrorStream(), StandardCharsets.UTF_8);
 
             log.info("stdin: {}", stdInputS);
             log.info("stderr: {}", stdErrorS);
@@ -147,18 +139,9 @@ public class CryptoOpenssl implements CryptoOperations {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            if (keyFile != null)
-                try {
-                    keyFile.delete();
-                } catch (Exception e) {};
-            if (contentFile != null)
-                try {
-                    contentFile.delete();
-                } catch (Exception e) {};
-            if (encryptedFile != null)
-                try {
-                    encryptedFile.delete();
-                } catch (Exception e) {};
+            FileUtils.deleteQuietly(keyFile);
+            FileUtils.deleteQuietly(encryptedFile);
+            FileUtils.deleteQuietly(contentFile);
         }
         return result;
     }
